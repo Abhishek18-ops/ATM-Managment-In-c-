@@ -4,6 +4,9 @@
         "vector": "cpp",
         "iostream": "cpp",
         "*.tcc": "cpp",
-        "cmath": "cpp"
-    }
+        "cmath": "cpp",
+        "sstream": "cpp",
+        "regex": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }
