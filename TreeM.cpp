@@ -85,6 +85,31 @@ void lavelorder(Node* root){
         }
     }
 }
+void levelInverseOrder(Node* root){
+    if(!root){
+        return;
+    }
+    queue<Node*>q;
+    stack<Node*>s;
+    Node* temp;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if(temp->left){
+            q.push(temp->left);
+        }    
+        if(temp->right){
+            q.push(temp->right);
+        }
+        s.push(temp);
+    }
+    while(!s.empty()){
+        cout<<s.top()->data<<" ";
+        s.pop();
+    }
+    cout<<endl;
+}
 int sizeofthetree(Node* root,int size){
     Node* temp;
     queue<Node*> q;
@@ -195,17 +220,117 @@ int maxelementwithoutrecursion(Node* root){
     }
     return max;
 }
+int leveloftree(Node* root){
+    if(!root){
+        return 0;
+    }
+    int level =0;
+    queue<Node*>q;
+    q.push(NULL);
+    q.push(root);
+    while(!q.empty()){
+        root = q.front();
+        q.pop();
+        if(root == NULL){
+            if(!q.empty())
+            q.push(NULL);
+            level++;
+        }
+        else{
+            if(root->left){
+                q.push(root->left);
+            }
+            if(root->right){
+                q.push(root->right);
+            }
+        }
+    }
+    return level;
+}
+int NubberOflevel(Node* root){
+     if(!root){
+        return 0;
+    }
+    int level=0;
+    Node* temp ;
+    queue<Node*>q;
+    q.push(NULL);
+    q.push(root);
+    while(!q.empty()){
+        root = q.front();
+        q.pop();
+        if(root == NULL){
+            if(!q.empty()){
+                q.push(NULL);
+            }
+            level++;
+            
+        }else{
+            if(root->left){
+            q.push(root->left);
+        }
+        if(root->right){
+            q.push(root->right);
+        }
+        }   
+    }
+    return level-1;
+}
+
+void deleteatree(Node* root){
+    if(!root){
+        return;
+    }
+    //first delete both subtrees
+    deleteatree(root->left);
+    deleteatree(root->right);
+    //Now delete the current node
+    free(root);
+}
+int heightofthetree(Node* root){
+    int leftheight ,rightheight;
+    if(!root){
+        return 0;
+    }else{
+        //compute the left subtree
+        leftheight = heightofthetree(root->left);
+        //compute the right subtree
+        rightheight = heightofthetree(root->right);
+
+        if(leftheight>rightheight){
+            return leftheight+1;
+        }else{
+            return rightheight+1;
+        }
+    }
+
+}
+
 int main(){
     int pos[] = {4,2,9,3,1};
     int ino[] = {4,2,1,9,3};
-    int m = sizeof(pos)/sizeof(pos[0]);
+    Node* root = new Node(5);
+    root->left = new Node(1);
+    root->right = new Node(2);
+    root->left->left = new Node(3);
+    root->left->right = new Node(4);
+    root->right->right  = new Node(6);
+    root->right->left = new Node(7);
+    root->right->left->left = new Node(9);
+    
+    // int m = sizeof(pos)/sizeof(pos[0]);
 
-    Node* n = BuildtreewithPostAndIn(pos,ino,0,m-1,m);
-    // displayInorder(n);
-    // cout<<searchelement(n,5);
-    lavelorder(n);
-    cout<<endl;
-    cout << maxelementwithoutrecursion(n);
-    cout << endl;
-    cout << "size => " << sizeofthetree(n,0);
+    // Node* n = BuildtreewithPostAndIn(pos,ino,0,m-1,m);
+    // // displayInorder(n);
+    // // cout<<searchelement(n,5);
+    // lavelorder(n);
+    // cout<<endl;
+    // cout << maxelementwithoutrecursion(n);
+    // cout << endl;
+    // cout << "size => " << sizeofthetree(n,0) << endl;
+    // deleteatree(root);
+    levelInverseOrder(root);
+    cout<<heightofthetree(root)<<endl;
+    cout << "No if levels " << leveloftree(root) << endl;
+
 }
