@@ -7,13 +7,14 @@ class Node{
     int data;
     Node* left;
     Node* right;
-
+    Node* nextsibling;
 
     Node(int val){
         data = val;
         left = NULL;
         right = NULL;
     }
+    
 };
 int search(int ino[], int start , int end,int curr){
     for(int i=start; i<=end;i++){
@@ -110,9 +111,10 @@ void levelInverseOrder(Node* root){
     }
     cout<<endl;
 }
-int sizeofthetree(Node* root,int size){
+int sizeofthetree(Node* root){
     Node* temp;
     queue<Node*> q;
+    int size=0;
     if(!root){
         return 0;
     }
@@ -247,36 +249,6 @@ int leveloftree(Node* root){
     }
     return level;
 }
-// int NubberOflevel(Node* root){
-//      if(!root){
-//         return 0;
-//     }
-//     int level=0;
-//     Node* temp ;
-//     queue<Node*>q;
-//     q.push(NULL);
-//     q.push(root);
-//     while(!q.empty()){
-//         root = q.front();
-//         q.pop();
-//         if(root == NULL){
-//             if(!q.empty()){
-//                 q.push(NULL);
-//             }
-//             level++;
-            
-//         }else{
-//             if(root->left){
-//             q.push(root->left);
-//         }
-//         if(root->right){
-//             q.push(root->right);
-//         }
-//         }   
-//     }
-//     return level-1;
-// }
-
 void deleteatree(Node* root){
     if(!root){
         return;
@@ -494,6 +466,148 @@ int maxsumatanylevel(Node* root){
     }
     return maxsum;
 }
+// Function that prints out all the array on a line
+void printArray(int ints[],int len){
+    for(int i=0;i<len; i++){
+        cout<< ints[i]<<" ";
+    }cout<<endl;
+}
+
+// Printing all the root to leave path 
+void printpath(Node* root,int path[],int pathlen){
+    if(!root){
+        return ;
+    }
+    path[pathlen] = root->data;
+    pathlen++;
+    // It's a leave so print the path and led it here
+    if(root->left == NULL && root->right == NULL){
+        printArray(path,pathlen);
+    }else{
+        //Otherwise print both the subtree
+        printpath(root->left, path,pathlen);
+        printpath(root->right,path,pathlen);
+
+    }
+
+}
+// Give an algorithm to print the path wich is equal to the given sum
+int hasPathSum(Node* root,int sum){
+    if(root == NULL){
+        return (sum =0);
+    }
+    else{
+        //otherwise check both subtree;
+        int remainingSum = sum -root->data;
+        if((root->left && root->right) || (!root->left && !root->right)){
+            return (hasPathSum(root->left,remainingSum) || hasPathSum(root->right,remainingSum));
+
+        }else if(root->left){
+            return hasPathSum(root->left,remainingSum);
+        }else{
+            return hasPathSum(root->right,remainingSum);
+        }
+    }
+}
+//Printing the sum of all the elements;
+int sumofthetree(Node* root){
+    if(root== NULL){
+        return 0;
+    }
+    else{
+        return (root->data + sumofthetree(root->left)+sumofthetree(root->right));
+    }
+}
+int sumofthetreewithoutrecursion(Node* root){
+    if(root== NULL){
+        return 0;
+    }
+    Node* temp ;
+    queue<Node*> q;
+    int sum =0;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        sum += temp->data;
+        if(temp->left){
+            q.push(temp->left);
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+    }
+    return sum;
+}
+
+// Problem 24
+Node* mirror(Node* root){
+    Node* temp;
+    if(root){
+        mirror(root->left);
+        mirror(root->right);
+        temp= root->left;
+        root->left = root->right;
+        root->right = temp;
+    }
+    return root;
+}
+
+//Problem 25
+bool  Ismirror(Node* root1,Node*root2){
+    if(root1 == NULL && root2 == NULL)return 1;
+    if(root1 == NULL || root2 == NULL)return 0;
+    if(root1->data != root2->data){
+        return 0;
+    }
+    else{
+        return (Ismirror(root1->left,root2->left)) && (Ismirror(root1->right,root2->right));
+    }
+}
+
+//Problem 29
+int printallAncestors(Node* root,Node* root1){
+    if(root == NULL || root1 == NULL)return 0;
+    if(root->left == root1 || root->right == root1
+    || printallAncestors(root->left,root1) || printallAncestors(root->right,root1)){
+        cout<< root->data ;
+    return 1;
+    }
+    return 0;
+}
+
+// Problem 34
+//nextsibling
+int fillsibling(Node* root){
+    if(!root){
+        return 0;
+
+    }
+    Node* temp;
+    queue<Node*>q;
+    q.push(root);
+    q.push(NULL);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        // cout<<temp->data<<" ";
+        if(temp== NULL){
+            // PUt another mark for the next level;
+            if(!q.empty()){
+                q.push(NULL);
+            }else{
+                temp->nextsibling = q.front();
+                if(temp->left){
+                    q.push(temp->left);
+                }
+                if(temp->right){
+                    q.push(temp->right);
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 int main(){
     int pos[] = {4,2,9,3,1};
@@ -541,6 +655,13 @@ int main(){
 
     cout<< endl  << NoOfHalfNodes(root) << endl;
      cout  << endl << identicaltree(root1,root) << endl;
+    // int path[sizeofthetree(root)];
+    // printpath(root,path,sizeofthetree(root));
+     cout<<sumofthetreewithoutrecursion(root)<<endl;
+     Node* mirror0 = mirror(root);
+    //  lavelorder(mirror0);
 
-     cout<< maxsumatanylevel(root);
+     cout<<endl;
+     cout<<printallAncestors(root1,mirror0);
+     cout<<(root);
 }
