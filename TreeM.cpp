@@ -247,35 +247,35 @@ int leveloftree(Node* root){
     }
     return level;
 }
-int NubberOflevel(Node* root){
-     if(!root){
-        return 0;
-    }
-    int level=0;
-    Node* temp ;
-    queue<Node*>q;
-    q.push(NULL);
-    q.push(root);
-    while(!q.empty()){
-        root = q.front();
-        q.pop();
-        if(root == NULL){
-            if(!q.empty()){
-                q.push(NULL);
-            }
-            level++;
+// int NubberOflevel(Node* root){
+//      if(!root){
+//         return 0;
+//     }
+//     int level=0;
+//     Node* temp ;
+//     queue<Node*>q;
+//     q.push(NULL);
+//     q.push(root);
+//     while(!q.empty()){
+//         root = q.front();
+//         q.pop();
+//         if(root == NULL){
+//             if(!q.empty()){
+//                 q.push(NULL);
+//             }
+//             level++;
             
-        }else{
-            if(root->left){
-            q.push(root->left);
-        }
-        if(root->right){
-            q.push(root->right);
-        }
-        }   
-    }
-    return level-1;
-}
+//         }else{
+//             if(root->left){
+//             q.push(root->left);
+//         }
+//         if(root->right){
+//             q.push(root->right);
+//         }
+//         }   
+//     }
+//     return level-1;
+// }
 
 void deleteatree(Node* root){
     if(!root){
@@ -305,16 +305,217 @@ int heightofthetree(Node* root){
     }
 
 }
+Node* dippestNode(Node* root){
+    if(!root){
+        return NULL;
+    }
+    Node* temp;
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if(temp->left){
+            q.push(temp->left);
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+    }
+    return temp;
+}
+void swapNode(Node* a,Node* b){
+    Node* temp = a;
+    a = b;
+    b =  temp;
+}
+// Deleting a articular node from a binary tree;
+void deletingAnode(Node* root,int data){
+    if(!root){
+        return ;
+    }
+    Node* temp;
+    Node* node;
+    queue<Node*>q;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if(data == temp->data){
+            node = temp;
+            break;
+        }
+        if(temp->left){
+            q.push(temp->left);
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+    }
+    Node* deep = dippestNode(root);
+    Node* temp1 = deep;
+    deep = node;
+    node = temp1;
+
+    free(node);
+    // cout<<node-data;
+}
+int NoOfLeaves(Node* root){
+    if(!root){
+        return 0;
+
+    }
+    queue<Node*>q;
+    Node* temp;
+    int count=0;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if(!temp->left && !temp->right){
+            count++;
+        }
+        if(temp->left){
+            q.push(temp->left);
+
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+
+    }
+    return count;
+}
+int NoOfFullNodes(Node* root){
+    if(!root){
+        return 0;
+
+    }
+    queue<Node*>q;
+    Node* temp;
+    int count=0;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if(temp->left && temp->right){
+            count++;
+        }
+        if(temp->left){
+            q.push(temp->left);
+
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+
+    }
+    return count;
+}
+int NoOfHalfNodes(Node* root){
+    if(!root){
+        return 0;
+    }
+    queue<Node*>q;
+    Node* temp;
+    int count=0;
+    q.push(root);
+    while(!q.empty()){
+        temp = q.front();
+        q.pop();
+        if((temp->left && !temp->right) || (!temp->left && temp->right)){
+            count++;
+        }
+        if(temp->left){
+            q.push(temp->left);
+        }
+        if(temp->right){
+            q.push(temp->right);
+        }
+    }
+    return count;
+}
+
+bool identicaltree(Node* root1, Node* root2){
+    bool po = false;
+    if(!root1 && !root2){
+       return true;
+    }if(!root1 || !root2){
+        return false;
+    }
+    return ((root1->data == root2->data) && (identicaltree(root1->left ,root2->left)) 
+    && (identicaltree(root1->right,root2->right)));
+}
+
+int diameter(Node* root){
+    if(!root){
+        return 0;
+    }
+    int hight1 = heightofthetree(root->left);
+    int hight2 = heightofthetree(root->right);
+    int diameter1 = diameter(root->left);
+    int diameter2 = diameter(root->right);
+
+    return max(hight1+hight2,max(diameter1,diameter2));
+
+}
+
+int maxsumatanylevel(Node* root){
+    if(!root){
+        return 0;
+    }
+    Node* temp;
+    queue<Node*> q;
+    int level =0,maxlevel=0,currentsum=0,maxsum=INT_MIN;
+    q.push(root);
+    q.push(NULL);
+    while(!q.empty()){
+        temp =  q.front();
+        q.pop();
+        if(temp == NULL){
+            if(currentsum > maxsum){
+                maxsum = currentsum;
+                maxlevel = level;
+            }
+            currentsum =0;
+            if(!q.empty()){
+                q.push(NULL);
+            }
+                level++;
+        }else{
+            currentsum += temp->data;
+            if(temp->left){
+                q.push(temp->left);
+            }
+            if(temp->right){
+                q.push(temp->right);
+            }
+        }
+    }
+    return maxsum;
+}
 
 int main(){
     int pos[] = {4,2,9,3,1};
     int ino[] = {4,2,1,9,3};
+    Node* root1 = new Node(5);
+    root1->left = new Node(1);
+    root1->right = new Node(2);
+    root1->left->left = new Node(3);
+    root1->left->right = new Node(4);
+    root1->right->right  = new Node(6);
+    root1->right->right->right  = new Node(10);
+    root1->right->left = new Node(7);
+    root1->right->left->left = new Node(9);
+
     Node* root = new Node(5);
     root->left = new Node(1);
     root->right = new Node(2);
     root->left->left = new Node(3);
     root->left->right = new Node(4);
     root->right->right  = new Node(6);
+    root->right->right->right  = new Node(10);
+    // root->right->right->right->left  = new Node(11);
     root->right->left = new Node(7);
     root->right->left->left = new Node(9);
     
@@ -329,8 +530,17 @@ int main(){
     // cout << endl;
     // cout << "size => " << sizeofthetree(n,0) << endl;
     // deleteatree(root);
-    levelInverseOrder(root);
-    cout<<heightofthetree(root)<<endl;
-    cout << "No if levels " << leveloftree(root) << endl;
+    lavelorder(root);
+    cout << endl;
+    // cout<<heightofthetree(root)<<endl;
+    cout << "No of levels " << leveloftree(root) << endl;
+    // cout  << dippestNode(root) << endl;
+    // deletingAnode(root,2);
+    lavelorder(root);
 
+
+    cout<< endl  << NoOfHalfNodes(root) << endl;
+     cout  << endl << identicaltree(root1,root) << endl;
+
+     cout<< maxsumatanylevel(root);
 }
